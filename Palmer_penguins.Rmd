@@ -1,0 +1,83 @@
+---
+title: "Palmer penguins"
+author: "David"
+date: "26/11/2021"
+output: html_document
+---
+
+```{r libraries setup, echo=TRUE}
+if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
+if (!require('palmerpenguins')) install.packages('palmerpenguins'); library('palmerpenguins')
+if (!require('knitr')) install.packages('knitr'); library('knitr')
+if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
+if (!require('tidyr')) install.packages('tidyr'); library('tidyr')
+```
+
+## Introduction:
+
+In this notebook are reports and observations about penguins from Palmer archipelago.
+
+In detail I will report:
+
+* The species that inhabit Palmer archipelago, organized by each Island
+* The relation between the length of flippers and body mass of the different penguins species
+* The different sizes of flipper for each specie and the most common flipper size per specie
+* The difference in weight for each specie from female to male and the average body mass for each
+
+In the meantime if you would prefer you can find more information about Palmer penguins by clicking [here](https://en.wikipedia.org/wiki/Palmer_Station) .
+
+## Let's start 
+
+### The species that inhabit Palmer archipelago, organized by each Island
+
+```{r species per island table, echo=TRUE}
+inhabited_islands <- penguins %>% group_by(species) %>% summarize(unique(island))
+inhabited_islands_df <- data.frame(inhabited_islands)
+colnames(inhabited_islands_df) <- c("Species", "Island of Residence")
+kable(inhabited_islands_df)
+```
+
+### The relation between the length of flippers and body mass of the different penguins species
+
+```{r bill length vs body mass, echo=TRUE}
+penguins %>% drop_na() %>% ggplot() + 
+  geom_jitter(mapping=aes(y=body_mass_g, x=flipper_length_mm, color=species)) + 
+  xlab("Length of flippers") + ylab("Body mass") + labs(color="Species") + 
+  annotate(geom = "curve", x = 215, y = 3500, xend = 222, yend = 4500, 
+    curvature = .3, arrow = arrow(length = unit(2, "mm"))) + 
+  annotate(geom= "text", x=215, y=3250, label="The biggest specie")
+```
+
+### The different sizes of flipper for each specie and the most common flipper size per specie
+
+```{r sizes of flippers}
+   messages_df <- data.frame(label = c("190 mm", "196 mm", "217 mm"),
+                            species = c("Adelie", "Chinstrap", "Gentoo"),
+                            xcord = c(210, 215, 197),
+                            ycord= c(12.5, 12.5, 12.5)
+  )
+  flippers_mean <- penguins %>% drop_na() %>% group_by(species) %>% summarize(mean_of_flippers = mean(flipper_length_mm))
+  
+  penguins %>% drop_na() %>% ggplot() + geom_bar(mapping=aes(x=flipper_length_mm, fill=species)) + facet_wrap(~species) + 
+geom_vline(data=flippers_mean, mapping=aes(xintercept=mean_of_flippers), color = "black", linetype="dashed") +
+labs(y="Number of Penguins", x="Length of the flippers (mm)", fill="Species") + 
+geom_text(data= messages_df, mapping=aes(x = xcord, y = ycord, label = label, fontface="italic"), color="black")
+```
+
+###  The difference in weight for each specie from female to male and the average body mass for each
+
+```{R female to male weight by specie}
+penguins_mean_weight_df <- data.frame(species = c("Adelie", "Adelie", "Chinstrap", "Chinstrap", "Gentoo", "Gentoo"),
+                                      sex = c("female", "male", "female", "male", "female", "male"),
+                                      mean_weight_label = c("3369 g", "4043 g", "3527 g", "3939 g", "4680 g", "5485 g"),
+                                      xcord = c(4000, 4500, 4000, 4500, 5000, 5000),
+                                      ycord = c(5, 5, 5, 5, 5, 5),
+                                      adjustment= c(0, 0, 0, 0, 0, 1 )
+                                     )
+
+penguins_mean_weight_line <- penguins %>% drop_na() %>% group_by(species, sex) %>% summarize(mean_weight = mean(body_mass_g))
+
+penguins %>%  drop_na() %>% ggplot() + geom_bar(mapping=aes(x=body_mass_g, fill=species)) + 
+  facet_wrap(vars(species, sex)) + labs(y="Number of penguins", x="Body mass (g)", fill="Species") + 
+  geom_vline(data=penguins_mean_weight_line, mapping=aes(xintercept=mean_weight), color="black", linetype="dashed") + geom_text(data=penguins_mean_weight_df, mapping=aes(x = xcord, y= ycord, label = mean_weight_label, hjust = adjustment), color="black", fontface="italic")
+```
