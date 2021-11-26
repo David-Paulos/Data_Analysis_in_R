@@ -5,7 +5,7 @@ date: "26/11/2021"
 output: html_document
 ---
 
-```{r libraries setup, echo=TRUE}
+```{r libraries setup, echo=FALSE, message=FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if (!require('palmerpenguins')) install.packages('palmerpenguins'); library('palmerpenguins')
 if (!require('knitr')) install.packages('knitr'); library('knitr')
@@ -30,7 +30,7 @@ In the meantime if you would prefer you can find more information about Palmer p
 
 ### The species that inhabit Palmer archipelago, organized by each Island
 
-```{r species per island table, echo=TRUE}
+```{r species per island table, echo=FALSE, message=FALSE, warning=FALSE}
 inhabited_islands <- penguins %>% group_by(species) %>% summarize(unique(island))
 inhabited_islands_df <- data.frame(inhabited_islands)
 colnames(inhabited_islands_df) <- c("Species", "Island of Residence")
@@ -39,7 +39,7 @@ kable(inhabited_islands_df)
 
 ### The relation between the length of flippers and body mass of the different penguins species
 
-```{r bill length vs body mass, echo=TRUE}
+```{r bill length vs body mass, echo=FALSE, message=FALSE, warning=FALSE}
 penguins %>% drop_na() %>% ggplot() + 
   geom_jitter(mapping=aes(y=body_mass_g, x=flipper_length_mm, color=species)) + 
   xlab("Length of flippers") + ylab("Body mass") + labs(color="Species") + 
@@ -50,7 +50,7 @@ penguins %>% drop_na() %>% ggplot() +
 
 ### The different sizes of flipper for each specie and the most common flipper size per specie
 
-```{r sizes of flippers}
+```{r sizes of flippers, echo=FALSE, message=FALSE, warning=FALSE}
    messages_df <- data.frame(label = c("190 mm", "196 mm", "217 mm"),
                             species = c("Adelie", "Chinstrap", "Gentoo"),
                             xcord = c(210, 215, 197),
@@ -66,7 +66,7 @@ geom_text(data= messages_df, mapping=aes(x = xcord, y = ycord, label = label, fo
 
 ###  The difference in weight for each specie from female to male and the average body mass for each
 
-```{R female to male weight by specie}
+```{R female to male weight by specie, echo=FALSE, message=FALSE, warning=FALSE}
 penguins_mean_weight_df <- data.frame(species = c("Adelie", "Adelie", "Chinstrap", "Chinstrap", "Gentoo", "Gentoo"),
                                       sex = c("female", "male", "female", "male", "female", "male"),
                                       mean_weight_label = c("3369 g", "4043 g", "3527 g", "3939 g", "4680 g", "5485 g"),
