@@ -9,7 +9,7 @@
 
 [Palmer penguins data analysis](https://david-paulos.github.io/Palmer_penguins_data_analysis_in_R.html)
 
-### To *work/view* the R and Rmd files follow the following instructions
+### To *work/view* the R and Rmd files follow the instructions below
 
 
 **Requirements:**
