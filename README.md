@@ -20,7 +20,7 @@
 
     On the Rstudio console pane type $ Palmer_penguins.R and press return.
     -- Or --
-    Open the Palmer_penguins.Rmd with Rstudio and run the code chuncks. 
+    Open the Palmer_penguins.Rmd with Rstudio and run the code chunks. 
 
 *Enjoy.*
  
